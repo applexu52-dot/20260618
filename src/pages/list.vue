@@ -1,0 +1,126 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <h1 class="text-center">未完成</h1>
+      </v-col>
+
+      <v-col cols="12">
+        <v-text-field
+          ref="newItemTextField"
+          v-model="newItem"
+          append-icon="mdi-plus"
+          clearable
+          hint="三個字以上才能新增"
+          label="新增事項"
+          :rules="[rules.required(), rules.minLength(3)]"
+          variant="outlined"
+          @click:append="addItem"
+          @keydown.enter="addItem"
+          @update:focused="onNewItemFocusUpdate"
+        />
+
+        <v-table>
+          <thead>
+            <tr>
+              <th>名稱</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(item, idx) in list.items" :key="item.id">
+              <td>
+                <v-text-field
+                  v-show="item.edit"
+                  ref="editItemTextField"
+                  v-model="item.model"
+                  autofocus
+                  hide-details="auto"
+                  :rules="[rules.required(), rules.minLength(3)]"
+                  variant="outlined"
+                  @keydown.enter="submitEditItem(item, idx)"
+                />
+
+                <template v-if="!item.edit">
+                  {{ item.text }}
+                </template>
+              </td>
+
+              <td>
+                <template v-if="item.edit">
+                  <v-btn color="yellow" icon="mdi-undo" @click="cancelEditItem(item)" />
+                  <v-btn color="green" icon="mdi-check" @click="submitEditItem(item, idx)" />
+                </template>
+
+                <template v-else>
+                  <v-btn color="blue" icon="mdi-pencil" @click="editItem(item)" />
+                  <v-btn color="red" icon="mdi-delete" @click="delItem(item.id)" />
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script setup>
+  import { nextTick, ref, useTemplateRef } from 'vue'
+  import { useRules } from 'vuetify/labs/rules'
+  import { useListStore } from '@/stores/list'
+
+  const list = useListStore()
+  const rules = useRules()
+
+  const newItem = ref('')
+  const newItemTextField = useTemplateRef('newItemTextField')
+
+  const addItem = () => {
+    if (!newItemTextField.value.isValid) return
+
+    list.items.push({
+      id: list.id++,
+      text: newItem.value,
+      edit: false,
+      model: newItem.value,
+    })
+
+    newItemTextField.value.reset()
+  }
+
+  const onNewItemFocusUpdate = async focus => {
+    if (!focus && !newItem.value) {
+      await nextTick()
+      newItemTextField.value.resetValidation()
+    }
+  }
+
+  const delItem = id => {
+    const idx = list.items.findIndex(item => item.id === id)
+    list.items.splice(idx, 1)
+  }
+
+  const editItem = item => {
+    item.edit = true
+  }
+
+  const cancelEditItem = item => {
+    item.edit = false
+    item.model = item.text
+  }
+
+  const editItemTextField = useTemplateRef('editItemTextField')
+
+  const submitEditItem = (item, idx) => {
+    if (!editItemTextField.value[idx].isValid) return
+    item.edit = false
+    item.text = item.model
+  }
+</script>
+
+<route lang="yaml">
+meta:
+  title: 事項
+</route>
