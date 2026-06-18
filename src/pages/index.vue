@@ -5,7 +5,7 @@
         <digit-number
           v-for="(text, idx) in timeleftText"
           :key="idx"
-          color="red"
+          color="#41F7F4"
           :data="text"
         />
       </v-col>
@@ -21,18 +21,21 @@
           2. 沒有目前事項也沒有未完成事項
         -->
         <v-btn
+          color="#2FB40E"
           :disabled="status === STATUS.COUNTING || (list.currentItem.length === 0 && list.items.length === 0)"
           icon="mdi-play"
           @click="startTimer"
         />
         <!-- 只有倒數中才能暫停 -->
         <v-btn
+          color="#B4350E"
           :disabled="status !== STATUS.COUNTING"
           icon="mdi-pause"
           @click="pauseTimer"
         />
         <!-- 目前有事項才能跳過 -->
         <v-btn
+          color="#0E9BB4"
           :disabled="list.currentItem.length === 0"
           icon="mdi-skip-next"
           @click="finish"

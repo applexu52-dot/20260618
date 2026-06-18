@@ -89,7 +89,7 @@ c-21.597,0.032-43.193,0.05-64.79-0.036c-1.354-0.005-3.012-0.544-4.006-1.424C28.9
 svg {
   width: 180px;
   margin: 10px;
-  filter: drop-shadow(0px 0px 5px yellow);
+  filter: drop-shadow(0px 0px 9px #F7F7F7);
 }
 path, circle {
   fill: transparent;
