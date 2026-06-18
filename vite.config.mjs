@@ -11,6 +11,7 @@ import VueRouter from 'vue-router/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [
     VueRouter({ dts: 'src/typed-router.d.ts' }),
     Vue({
@@ -63,7 +64,7 @@ export default defineConfig({
       },
       // Android 的 PWA 設定
       // 自動產生 site.webmanifest 檔
-       manifest: {
+      manifest: {
         name: '番茄鐘',
         short_name: '番茄鐘',
         icons: [
